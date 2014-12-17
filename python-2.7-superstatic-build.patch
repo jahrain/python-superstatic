@@ -1,0 +1,74 @@
+diff -Nru Python-2.7.8/Lib/ctypes/__init__.py Python-2.7.8/Lib/ctypes/__init__.py
+--- Python-2.7.8/Lib/ctypes/__init__.py	2010-03-01 04:56:12.000000000 +0000
++++ Python-2.7.8/Lib/ctypes/__init__.py	2010-07-11 15:42:53.000000000 +0000
+@@ -445,12 +445,12 @@
+ cdll = LibraryLoader(CDLL)
+ pydll = LibraryLoader(PyDLL)
+ 
+-if _os.name in ("nt", "ce"):
+-    pythonapi = PyDLL("python dll", None, _sys.dllhandle)
+-elif _sys.platform == "cygwin":
+-    pythonapi = PyDLL("libpython%d.%d.dll" % _sys.version_info[:2])
+-else:
+-    pythonapi = PyDLL(None)
++#if _os.name in ("nt", "ce"):
++#    pythonapi = PyDLL("python dll", None, _sys.dllhandle)
++#elif _sys.platform == "cygwin":
++#    pythonapi = PyDLL("libpython%d.%d.dll" % _sys.version_info[:2])
++#else:
++#    pythonapi = PyDLL(None)
+ 
+ 
+ if _os.name in ("nt", "ce"):
+diff -Nru Python-2.7.8/PC/config.c Python-2.7.8/PC/config.c
+--- Python-2.7.8/PC/config.c	2010-05-09 14:46:46.000000000 +0000
++++ Python-2.7.8/PC/config.c	2010-07-11 20:00:24.000000000 +0000
+@@ -69,6 +69,12 @@
+ extern void init_io(void);
+ extern void _PyWarnings_Init(void);
+ 
++extern void init_ssl(void);
++extern void init_hashlib(void);
++extern void init_ctypes(void);
++extern void init_socket(void);
++extern void initselect(void);
++
+ /* tools/freeze/makeconfig.py marker for additional "extern" */
+ /* -- ADDMODULE MARKER 1 -- */
+ 
+@@ -165,6 +171,12 @@
+ 
+     {"_io", init_io},
+ 
++	{"_ctypes", init_ctypes},
++	{"_ssl", init_ssl},
++	{"_hashlib", init_hashlib},
++	{"_socket", init_socket},
++	{"select", initselect},
++
+     /* Sentinel */
+     {0, 0}
+ };
+diff -Nru Python-2.7.8/PC/pyconfig.h Python-2.7.8/PC/pyconfig.h
+--- Python-2.7.8/PC/pyconfig.h	2009-10-24 13:28:38.000000000 +0000
++++ Python-2.7.8/PC/pyconfig.h	2010-07-11 15:40:51.000000000 +0000
+@@ -566,7 +566,7 @@
+ /* #define HAVE_CLOCK */
+ 
+ /* Define when any dynamic module loading is enabled */
+-#define HAVE_DYNAMIC_LOADING
++/* #define HAVE_DYNAMIC_LOADING */
+ 
+ /* Define if you have ftime.  */
+ #ifndef MS_WINCE
+diff -r -Z -U 2 Python-2.7.8/Lib/distutils/msvc9compiler.py Python-2.7.8/Lib/distutils/msvc9compiler.py
+--- Python-2.7.8/Lib/distutils/msvc9compiler.py       2013-05-11 20:32:42.000000000 -0700
++++ Python-2.7.8/Lib/distutils/msvc9compiler.py       2013-10-05 17:48:17.906895400 -0700
+@@ -659,5 +659,6 @@
+             # manifest.  Maybe we should link to a temp file?  OTOH, that
+             # implies a build environment error that shouldn't go undetected.
+-            mfinfo = self.manifest_get_embed_info(target_desc, ld_args)
++            #mfinfo = self.manifest_get_embed_info(target_desc, ld_args)
++            mfinfo = None
+             if mfinfo is not None:
+                 mffilename, mfid = mfinfo

@@ -1,0 +1,12 @@
+diff -Nru openssl-1.0.1h/util/mk1mf.pl openssl-1.0.1h/util/mk1mf.pl
+--- openssl-1.0.1h/util/mk1mf.pl        Thu Jun  5 11:44:33 2014
++++ openssl-1.0.1h/util/mk1mf.pl        Tue Dec  9 14:18:00 2014
+@@ -327,7 +327,7 @@
+ for (;;)
+ 	{
+ 	chop;
+-
++	s/\r$//; #remove carriage return too!
+ 	($key,$val)=/^([^=]+)=(.*)/;
+ 	if ($key eq "RELATIVE_DIRECTORY")
+ 		{
