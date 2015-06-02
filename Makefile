@@ -1,26 +1,28 @@
-PYTHON_V=2.7.3
-OPENSSL_V=1.0.1c
+PYTHON_V=2.7.8
+OPENSSL_V=1.0.1h
 
 all: Python-$(PYTHON_V)/PCbuild/pythonembed.lib
 
 clean:
-	-rmdir /s /q Python-$(PYTHON_V)
-	-rmdir /s /q openssl-$(OPENSSL_V)
-
-Python-$(PYTHON_V)\stamp: Python-$(PYTHON_V).tgz python-2.7-superstatic-build.patch
-	@echo Unpacking Python $(PYTHON_V)
-	7za x -y Python-$(PYTHON_V).tgz >nul:
-	7za x -y Python-$(PYTHON_V).tar >nul:
-	del Python-$(PYTHON_V).tar
-	cd Python-$(PYTHON_V) && patch -p1 < ..\python-2.7-superstatic-build.patch
-	echo>$@
+	-del /S /F /Q Python-$(PYTHON_V)
+	-del /S /F /Q openssl-$(OPENSSL_V)
 
 openssl-$(OPENSSL_V)\stamp: openssl-$(OPENSSL_V).tar.gz
 	@echo Unpacking OpenSSL $(OPENSSL_V)
 	7za x -y openssl-$(OPENSSL_V).tar.gz >nul:
 	7za x -y openssl-$(OPENSSL_V).tar >nul:
 	del openssl-$(OPENSSL_V).tar
+    cd openssl-$(OPENSSL_V) && patch -p1 < ..\openssl-winfix.patch
 	echo>$@
+
+Python-$(PYTHON_V)\stamp: Python-$(PYTHON_V).tgz python-2.7-superstatic-build.patch openssl-$(OPENSSL_V)\stamp
+	@echo Unpacking Python $(PYTHON_V)
+	7za x -y Python-$(PYTHON_V).tgz >nul:
+	7za x -y Python-$(PYTHON_V).tar >nul:
+	del /Q Python-$(PYTHON_V).tar
+	cd Python-$(PYTHON_V) && patch -p1 < ..\python-2.7-superstatic-build.patch
+	echo>$@
+
 
 openssl-$(OPENSSL_V)/out32/libeay32.lib: openssl-$(OPENSSL_V)\stamp
 	cd openssl-$(OPENSSL_V)
@@ -45,4 +47,4 @@ Python-$(PYTHON_V)/PCbuild/pythonembed.lib: Python-$(PYTHON_V)\stamp openssl-$(O
 	cd Python-$(PYTHON_V)\PCbuild
 	cd
 	copy ..\..\python.vcxproj.tpl python.vcxproj
-	msbuild /m:$(NUMBER_OF_PROCESSORS) python.vcxproj "/p:OPENSSL_V=$(OPENSSL_V);Configuration=Release"
+	msbuild /m:$(NUMBER_OF_PROCESSORS) python.vcxproj "/p:OPENSSL_V=$(OPENSSL_V);Configuration=Release;Platform=x86;PlatformToolset=v120_xp"
