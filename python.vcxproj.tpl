@@ -44,8 +44,8 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;Py_NO_ENABLE_SHARED;Py_BUILD_CORE;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\PC;..\Python;..\Modules\zlib;..\Modules\_ctypes\libffi_msvc;..\..\openssl-$(OPENSSL_V)\inc32;..\Include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;Py_NO_ENABLE_SHARED;Py_BUILD_CORE;_USRDLL;_CRT_SECURE_NO_WARNINGS;MODULE_NAME="sqlite3";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\PC;..\Python;..\Modules\zlib;..\Modules\_ctypes\libffi_msvc;..\..\openssl-$(OPENSSL_V)\inc32;..\Include;..\..\sqlite3</AdditionalIncludeDirectories>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -72,10 +72,12 @@
     <ClCompile Include="..\Python\*.c"/>
     <ClCompile Include="..\Modules\*.c"/>
     <ClCompile Include="..\Modules\_ctypes\*.c"/>
+    <ClCompile Include="..\Modules\_sqlite\*.c"/>
     <ClCompile Include="..\Modules\_ctypes\libffi_msvc\*.c"/>
     <ClCompile Include="..\Modules\_io\*.c"/>
     <ClCompile Include="..\Modules\cjkcodecs\*.c"/>
     <ClCompile Include="..\Modules\zlib\*.c"/>
+    <ClCompile Include="..\..\sqlite3\*.c"/>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
